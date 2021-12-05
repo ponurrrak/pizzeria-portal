@@ -14,20 +14,20 @@ import Tables from './components/views/Tables/Tables';
 import Waiter from './components/views/Waiter/Waiter';
 
 const App = () => (
-  <BrowserRouter>
+  <BrowserRouter basename={process.env.PUBLIC_URL}>
     <MainLayout>
       <Switch>
-        <Route exact path={`${process.env.PUBLIC_URL}/tables/booking/new`} component={BookingNew} />
-        <Route exact path={`${process.env.PUBLIC_URL}/tables/booking/:id`} component={Booking} />
-        <Route exact path={`${process.env.PUBLIC_URL}/tables/events/new`} component={EventsNew} />
-        <Route exact path={`${process.env.PUBLIC_URL}/tables/events/:id`} component={Events} />
-        <Route exact path={`${process.env.PUBLIC_URL}/tables`} component={Tables} />
-        <Route exact path={`${process.env.PUBLIC_URL}/waiter/order/new`} component={OrderNew} />
-        <Route exact path={`${process.env.PUBLIC_URL}/waiter/order/:id`} component={Order} />
-        <Route exact path={`${process.env.PUBLIC_URL}/waiter`} component={Waiter} />
-        <Route exact path={`${process.env.PUBLIC_URL}/kitchen`} component={Kitchen} />
-        <Route exact path={`${process.env.PUBLIC_URL}/login`} component={Login} />
-        <Route exact path={`${process.env.PUBLIC_URL}/`} component={Dashboard} />
+        <Route exact path='/tables/booking/new' component={BookingNew} />
+        <Route exact path='/tables/booking/:id' component={Booking} />
+        <Route exact path='/tables/events/new' component={EventsNew} />
+        <Route exact path='/tables/events/:id' component={Events} />
+        <Route exact path='/tables' component={Tables} />
+        <Route exact path='/waiter/order/new' component={OrderNew} />
+        <Route exact path='/waiter/order/:id' component={Order} />
+        <Route exact path='/waiter' component={Waiter} />
+        <Route exact path='/kitchen' component={Kitchen} />
+        <Route exact path='/login' component={Login} />
+        <Route exact path='/' component={Dashboard} />
       </Switch>
     </MainLayout>
   </BrowserRouter>

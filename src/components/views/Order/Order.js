@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './Order.module.scss';
 
-const Order = ({match}) => (
+const Order = ({match: {params: {id}}}) => (
   <div className={styles.component}>
     <h2>Order View</h2>
-    <h3>{`Order id: ${match.params.id}`}</h3>
+    <h3>{`Order id: ${id}`}</h3>
   </div>
 );
 
