@@ -1,0 +1,14 @@
+@import '../../../styles/settings.scss';
+
+.component {
+  padding: $base-size;
+  margin-left: auto;
+}
+
+.link {
+  color:inherit;
+}
+
+.active {
+  color: $color-active;
+}
