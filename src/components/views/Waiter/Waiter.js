@@ -1,4 +1,5 @@
 import React from 'react';
+import shortid from 'shortid';
 import PropTypes from 'prop-types';
 import styles from './Waiter.module.scss';
 import Table from '@material-ui/core/Table';
@@ -25,37 +26,39 @@ class Waiter extends React.Component {
     fetchTables();
   }
 
-  renderActions(table){
+  renderActionButton(table, action){
     const { loadNewTableStatus } = this.props;
-    const renderActionButton = (action) => {
-      const payload = {
-        ...table,
-        status: action === 'new order' ? 'ordered': action,
-      };
-      return (
-        <Button onClick={() => loadNewTableStatus(payload)}>
-          {action}
-        </Button>
-      );
+    const payload = {
+      ...table,
+      status: action === 'new order' ? 'ordered': action,
+      order: action === 'new order' ? shortid.generate() : action === 'free' ? null : table.order,
     };
+    return (
+      <Button onClick={() => loadNewTableStatus(payload)}>
+        {action}
+      </Button>
+    );
+  }
+
+  renderActions(table){
     switch (table.status) {
       case 'free':
         return (
           <>
-            <span>{renderActionButton('thinking')}</span>
-            <span>{renderActionButton('new order')}</span>
+            <span>{this.renderActionButton(table, 'thinking')}</span>
+            <span>{this.renderActionButton(table, 'new order')}</span>
           </>
         );
       case 'thinking':
-        return renderActionButton('new order');
+        return this.renderActionButton(table, 'new order');
       case 'ordered':
-        return renderActionButton('prepared');
+        return this.renderActionButton(table, 'prepared');
       case 'prepared':
-        return renderActionButton('delivered');
+        return this.renderActionButton(table, 'delivered');
       case 'delivered':
-        return renderActionButton('paid');
+        return this.renderActionButton(table, 'paid');
       case 'paid':
-        return renderActionButton('free');
+        return this.renderActionButton(table, 'free');
       default:
         return null;
     }
