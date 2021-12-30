@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import shortid from 'shortid';
 import PropTypes from 'prop-types';
 import styles from './Waiter.module.scss';
@@ -104,7 +105,7 @@ class Waiter extends React.Component {
                   </TableCell>
                   <TableCell>
                     {row.order && (
-                      <Button to={`${process.env.PUBLIC_URL}/waiter/order/${row.order}`}>
+                      <Button component={Link} to={`/waiter/order/${row.order}`}>
                         {row.order}
                       </Button>
                     )}
