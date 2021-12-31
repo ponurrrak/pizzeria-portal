@@ -2,4 +2,27 @@
 
 .component {
   padding: $base-size;
+  margin-top: 64px;
+  margin-bottom: 64px;
+
+  .header {
+    margin-bottom: 20px;
+    padding-left: 48px;
+  }
+
+  .eventInfo {
+    margin-bottom: 64px;
+    padding-left: 48px;
+  }
+
+  .gridItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+
+    .slider {
+      width: 80%;
+    }
+  }
 }
