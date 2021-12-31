@@ -52,9 +52,9 @@ const generateMarks = stepsNumber => {
 };
 
 const Booking = ({match}) => {
+  const [isDisabled, setActive] = useState(true);
   const [bookingTime, setBookingTime] = useState(new Date(booking.date + 'T' + booking.hour));
   const [sliderValue, setSliderValue] = useState(booking.duration);
-  const [isDisabled, setActive] = useState(true);
   const handleSliderValueChange = (event, newValue) => {
     setSliderValue(newValue);
   };
@@ -84,8 +84,10 @@ const Booking = ({match}) => {
   };
   return (
     <Paper className={styles.component}>
-      <h2 className={styles.header}>{`Table booking of id ${match.params.id} details`}</h2>
-      <Grid container spacing={3} justifyContent="space-around">
+      <h2 className={styles.header}>
+        {`Table booking of id ${match.params.id} details`}
+      </h2>
+      <Grid container spacing={3}>
         <Grid item className={styles.gridItem} xs={12} md={6}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <DateTimePicker
@@ -121,9 +123,24 @@ const Booking = ({match}) => {
               Table
             </Typography>
             <RadioGroup name="table" value={selectedTable} onChange={handleTableChange}>
-              <FormControlLabel value={1} control={<Radio />} label="table 1" disabled={isDisabled ? true : false} />
-              <FormControlLabel value={2} control={<Radio />} label="table 2" disabled={isDisabled ? true : false} />
-              <FormControlLabel value={3} control={<Radio />} label="table 3" disabled={isDisabled ? true : false} />
+              <FormControlLabel
+                value={1}
+                control={<Radio />}
+                label="table 1"
+                disabled={isDisabled ? true : false}
+              />
+              <FormControlLabel
+                value={2}
+                control={<Radio />}
+                label="table 2"
+                disabled={isDisabled ? true : false}
+              />
+              <FormControlLabel
+                value={3}
+                control={<Radio />}
+                label="table 3"
+                disabled={isDisabled ? true : false}
+              />
             </RadioGroup>
           </FormControl>
         </Grid>
@@ -144,17 +161,29 @@ const Booking = ({match}) => {
             </Typography>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox checked={starters.water} onChange={handleStartersChange} name="water"/>}
+                control={<Checkbox
+                  checked={starters.water}
+                  onChange={handleStartersChange}
+                  name="water"
+                />}
                 label="Water"
                 disabled={isDisabled ? true : false}
               />
               <FormControlLabel
-                control={<Checkbox checked={starters.cola} onChange={handleStartersChange} name="cola"/>}
+                control={<Checkbox
+                  checked={starters.cola}
+                  onChange={handleStartersChange}
+                  name="cola"
+                />}
                 label="Cola"
                 disabled={isDisabled ? true : false}
               />
               <FormControlLabel
-                control={<Checkbox checked={starters.bread} onChange={handleStartersChange} name="bread"/>}
+                control={<Checkbox
+                  checked={starters.bread}
+                  onChange={handleStartersChange}
+                  name="bread"
+                />}
                 label="Bread"
                 disabled={isDisabled ? true : false}
               />
@@ -180,7 +209,12 @@ const Booking = ({match}) => {
           />
         </Grid>
         <Grid item className={styles.gridItem} xs={12} md={4}>
-          <Button variant="contained" color="primary" size="large" onClick={()=>setActive(!isDisabled)}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={()=>setActive(!isDisabled)}
+          >
             {isDisabled ? 'Edit' : 'Save'}
           </Button>
         </Grid>
