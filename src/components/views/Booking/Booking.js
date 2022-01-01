@@ -51,6 +51,10 @@ const generateMarks = stepsNumber => {
   return marks;
 };
 
+const tablesList = Array.from({length: 3}, (item, index) => index + 1);
+const startersList = ['water', 'cola', 'bread'];
+
+
 const Booking = ({match}) => {
   const [isDisabled, setActive] = useState(true);
   const [bookingTime, setBookingTime] = useState(new Date(booking.date + 'T' + booking.hour));
@@ -123,24 +127,15 @@ const Booking = ({match}) => {
               Table
             </Typography>
             <RadioGroup name="table" value={selectedTable} onChange={handleTableChange}>
-              <FormControlLabel
-                value={1}
-                control={<Radio />}
-                label="table 1"
-                disabled={isDisabled ? true : false}
-              />
-              <FormControlLabel
-                value={2}
-                control={<Radio />}
-                label="table 2"
-                disabled={isDisabled ? true : false}
-              />
-              <FormControlLabel
-                value={3}
-                control={<Radio />}
-                label="table 3"
-                disabled={isDisabled ? true : false}
-              />
+              {tablesList.map(table => (
+                <FormControlLabel
+                  key={table}
+                  value={table}
+                  control={<Radio />}
+                  label={`table ${table}`}
+                  disabled={isDisabled ? true : false}
+                />
+              ))}
             </RadioGroup>
           </FormControl>
         </Grid>
@@ -160,33 +155,18 @@ const Booking = ({match}) => {
               Starters
             </Typography>
             <FormGroup>
-              <FormControlLabel
-                control={<Checkbox
-                  checked={starters.water}
-                  onChange={handleStartersChange}
-                  name="water"
-                />}
-                label="Water"
-                disabled={isDisabled ? true : false}
-              />
-              <FormControlLabel
-                control={<Checkbox
-                  checked={starters.cola}
-                  onChange={handleStartersChange}
-                  name="cola"
-                />}
-                label="Cola"
-                disabled={isDisabled ? true : false}
-              />
-              <FormControlLabel
-                control={<Checkbox
-                  checked={starters.bread}
-                  onChange={handleStartersChange}
-                  name="bread"
-                />}
-                label="Bread"
-                disabled={isDisabled ? true : false}
-              />
+              {startersList.map(starter => (
+                <FormControlLabel
+                  control={<Checkbox
+                    checked={starters[starter]}
+                    onChange={handleStartersChange}
+                    name={starter}
+                  />}
+                  label={starter[0].toUpperCase() + starter.slice(1)}
+                  disabled={isDisabled ? true : false}
+                  key={starter}
+                />
+              ))}
             </FormGroup>
           </FormControl>
         </Grid>

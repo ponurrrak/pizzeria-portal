@@ -34,11 +34,19 @@ class Waiter extends React.Component {
       status: action === 'new order' ? 'ordered': action,
       order: action === 'new order' ? shortid.generate() : action === 'free' ? null : table.order,
     };
-    return (
-      <Button onClick={() => loadNewTableStatus(payload)}>
-        {action}
-      </Button>
-    );
+    if(action === 'new order'){
+      return (
+        <Button component={Link} to={{pathname: `/waiter/order/new`, state: table.id}} onClick={() => loadNewTableStatus(payload)}>
+          {action}
+        </Button>
+      );
+    } else {
+      return (
+        <Button onClick={() => loadNewTableStatus(payload)}>
+          {action}
+        </Button>
+      );
+    }
   }
 
   renderActions(table){

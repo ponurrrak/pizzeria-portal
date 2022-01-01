@@ -35,6 +35,9 @@ const generateMarks = stepsNumber => {
   return marks;
 };
 
+const tablesList = Array.from({length: 3}, (item, index) => index + 1);
+const startersList = ['water', 'cola', 'bread'];
+
 const EventsNew = () => {
   const timeNow = new Date();
   const [bookingDate, setBookingDate] = useState(timeNow);
@@ -92,21 +95,14 @@ const EventsNew = () => {
               Table
             </Typography>
             <RadioGroup name="table" value={selectedTable} onChange={handleTableChange}>
-              <FormControlLabel
-                value={1}
-                control={<Radio />}
-                label="table 1"
-              />
-              <FormControlLabel
-                value={2}
-                control={<Radio />}
-                label="table 2"
-              />
-              <FormControlLabel
-                value={3}
-                control={<Radio />}
-                label="table 3"
-              />
+              {tablesList.map(table => (
+                <FormControlLabel
+                  key={table}
+                  value={table}
+                  control={<Radio />}
+                  label={`table ${table}`}
+                />
+              ))}
             </RadioGroup>
           </FormControl>
         </Grid>
@@ -124,24 +120,15 @@ const EventsNew = () => {
               Starters
             </Typography>
             <FormGroup>
-              <FormControlLabel
-                control={<Checkbox
-                  name="water"
-                />}
-                label="Water"
-              />
-              <FormControlLabel
-                control={<Checkbox
-                  name="cola"
-                />}
-                label="Cola"
-              />
-              <FormControlLabel
-                control={<Checkbox
-                  name="bread"
-                />}
-                label="Bread"
-              />
+              {startersList.map(starter => (
+                <FormControlLabel
+                  control={<Checkbox
+                    name={starter}
+                  />}
+                  label={starter[0].toUpperCase() + starter.slice(1)}
+                  key={starter}
+                />
+              ))}
             </FormGroup>
           </FormControl>
         </Grid>
