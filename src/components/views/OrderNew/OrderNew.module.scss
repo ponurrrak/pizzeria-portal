@@ -2,4 +2,56 @@
 
 .component {
   padding: $base-size;
+
+  .tableChoice {
+    margin-bottom: 30px;
+  }
+
+  .menuItem {
+    padding-bottom: 0;
+  }
+
+  .addToOrderButton {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding-right: 16px;
+    text-align: right;
+  }
+
+  .nestedList {
+    padding-top: 0;
+    padding-left: 56px;
+
+    .formControl {
+      display: block;
+    }
+
+    .option {
+      padding-left: 20px;
+    }
+  }
+
+  .orderBadge {
+    padding-left: 15px;
+    padding-right: 20px;
+    border-top: none;
+    border-bottom: none;
+  }
+
+  .orderParams {
+    padding-bottom: 0;
+  }
+
+  .itemTotal {
+    margin-bottom: 24px;
+  }
+
+  .totalOrderDivider {
+    margin-top: 30px;
+  }
+
+  .orderTotal {
+    padding-top: 8px;
+    font-size: 14px;
+  }
 }

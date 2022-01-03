@@ -88,9 +88,9 @@ const Events = ({match}) => {
   };
   return (
     <Paper className={styles.component}>
-      <h2 className={styles.header}>
+      <Typography variant='h4' className={styles.header}>
         {`Event of id ${match.params.id} details`}
-      </h2>
+      </Typography>
       <div className={styles.eventInfo}>
         <Typography gutterBottom>
           {`Event frequency: ${event.repeat}.`}

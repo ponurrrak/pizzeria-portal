@@ -48,9 +48,9 @@ const EventsNew = () => {
   };
   return (
     <Paper className={styles.component}>
-      <h2 className={styles.header}>
+      <Typography variant='h4' className={styles.header}>
         Start new event
-      </h2>
+      </Typography>
       <Grid container spacing={3}>
         <Grid item className={styles.gridItem} xs={12} md={4}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
