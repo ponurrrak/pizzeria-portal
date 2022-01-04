@@ -113,7 +113,7 @@ class Waiter extends React.Component {
                   </TableCell>
                   <TableCell>
                     {row.order && (
-                      <Button component={Link} to={`/waiter/order/${row.order}`}>
+                      <Button component={Link} to={{pathname: `/waiter/order/${row.order}`, state: row.id}}>
                         {row.order}
                       </Button>
                     )}

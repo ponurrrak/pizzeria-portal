@@ -20,7 +20,6 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-
 import PropTypes from 'prop-types';
 import styles from './OrderNew.module.scss';
 
@@ -214,11 +213,9 @@ const countOrderSums = order => {
   for(const orderItem of order){
     let totalItem = orderItem.price;
     if(orderItem.params){
-      const paramKeys = Object.keys(orderItem.params);
-      for(const paramKey of paramKeys){
+      for(const paramKey in orderItem.params){
         const options = orderItem.params[paramKey].options;
-        const optionKeys = Object.keys(orderItem.params[paramKey].options);
-        for(const optionKey of optionKeys){
+        for(const optionKey in options){
           const option = options[optionKey];
           if(option.default && option.checked === false){
             totalItem -= option.price;
@@ -495,7 +492,7 @@ const OrderNew = ({location}) => {
   const [orderCounter, setOrderCounter] = useState(1);
   return (
     <Paper className={styles.component}>
-      <Typography variant='h4'>
+      <Typography gutterBottom variant='h4'>
         Set a new order
       </Typography>
       <FormControl component='fieldset' className={styles.tableChoice}>
@@ -513,19 +510,26 @@ const OrderNew = ({location}) => {
           ))}
         </RadioGroup>
       </FormControl>
-      <Grid container spacing={3}>
+      <Grid container
+        spacing={3}
+        justifyContent={order.length ? 'flex-start' : 'center'}
+      >
         <Grid item className={styles.gridItem} xs={12} md={6}>
-          <Typography variant='h5'>
+          <Typography gutterBottom variant='h5'>
             Menu
           </Typography>
           {renderMenu(menuToRender, setPreOrder, order, changeOrder, orderCounter, setOrderCounter)}
         </Grid>
-        <Grid item className={styles.gridItem} xs={12} md={6}>
-          <Typography variant='h5'>
-            Order
-          </Typography>
-          {order.length ? renderOrder(order, changeOrder) : ''}
-        </Grid>
+        {order.length ?
+          (<Grid item className={styles.gridItem} xs={12} md={6}>
+            <Typography gutterBottom variant='h5'>
+              Order
+            </Typography>
+            {renderOrder(order, changeOrder)}
+          </Grid>)
+          :
+          ''
+        }
       </Grid>
     </Paper>
   );
