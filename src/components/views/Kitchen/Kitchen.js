@@ -136,18 +136,15 @@ const Kitchen = () => {
           {ordersList.map((order, ordersIndex) => (
             order.products.map((product, productsIndex) => (
               <TableRow key={order.id + product.id}>
-                {!productsIndex ? (
+                {!productsIndex && (
                   <TableCell
-                    rowspan={order.products.length}
+                    rowSpan={order.products.length}
                     component="th"
                     scope="row"
                   >
                     {order.id}
                   </TableCell>
-                )
-                  :
-                  ''
-                }
+                )}
                 <TableCell>
                   {product.name}
                 </TableCell>
