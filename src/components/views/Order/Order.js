@@ -548,7 +548,8 @@ const Order = ({match: {params: {id}}, location: {state}}) => {
   };
   const [menuToRender, setPreOrder] = useState(sortObjectsArray(JSON.parse(JSON.stringify(menu))));
   const [order, changeOrder] = useState(orderObject);
-  const [orderCounter, setOrderCounter] = useState(1);
+  const maxOrderCounter = Math.max(...orderObject.map(orderItem => orderItem.orderCounter)) + 1;
+  const [orderCounter, setOrderCounter] = useState(maxOrderCounter);
   return (
     <Paper className={styles.component}>
       <Typography gutterBottom variant='h4'>
