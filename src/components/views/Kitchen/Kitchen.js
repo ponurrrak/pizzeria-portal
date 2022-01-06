@@ -176,7 +176,7 @@ const Kitchen = () => {
                     }
                   }
                   >
-                    <DoneIcon/>
+                    <DoneIcon color="secondary"/>
                   </Button>
                 </TableCell>
               </TableRow>

@@ -2,4 +2,38 @@
 
 .component {
   padding: $base-size;
+  margin-top: 64px;
+  margin-bottom: 64px;
+
+  .gridItem:last-child {
+    margin-right: 40px;
+  }
+
+  .table {
+    margin-top: 64px;
+  }
+}
+
+
+/* media queries */
+
+@media (max-width: 959px) {
+
+  .gridItem {
+    &:first-child {
+      order: 2;
+      margin-top: 64px;
+
+    }
+
+    &:last-child {
+      order: 1;
+    }
+  }
+
+  .table {
+    th, td {
+      text-align: center;
+    }
+  }
 }

@@ -12,16 +12,21 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import styles from './Tables.module.scss';
 
+const today = new Date();
+const todayString = today.toDateString();
+const tomorrow = new Date(today);
+tomorrow.setDate(today.getDate() + 1);
+
 const bookings = [
   {
-    date: '2021-12-27',
+    date: todayString,
     hour: '23:00',
     table: 2,
     duration: 2,
     id: 3,
   },
   {
-    date: '2021-12-25',
+    date: '2021-12-27',
     hour: '22:00',
     table: 3,
     repeat: 'daily',
@@ -29,11 +34,25 @@ const bookings = [
     id: 2,
   },
   {
-    date: '2021-12-27',
+    date: todayString,
     hour: '22:00',
     table: 1,
     duration: 1,
     id: 1,
+  },
+  {
+    date: todayString,
+    hour: '16:30',
+    table: 1,
+    duration: 2,
+    id: 4,
+  },
+  {
+    date: tomorrow.toDateString(),
+    hour: '18:00',
+    table: 2,
+    duration: 2,
+    id: 5,
   },
 ];
 
@@ -58,8 +77,14 @@ const getDefaultEndTime = time => (
 );
 
 const getEndTime = time => {
-  const endTime = getStartTime(time);
-  endTime.setMinutes(endTime.getMinutes() + 30);
+  const endTime = new Date(time);
+  if(time.getMinutes() > 0 && time.getMinutes() <= 30){
+    endTime.setMinutes(30);
+  } else if(time.getMinutes() > 30){
+    endTime.setMinutes(60);
+  }
+  endTime.setSeconds(0);
+  endTime.setMilliseconds(0);
   return endTime;
 };
 
@@ -70,7 +95,7 @@ const generateTableBody = (bookings, minLoopTime, maxLoopTime) => {
     const bookingIDsToRender = [];
     for(let table = 1; table <= tablesNumber; table++){
       const matchingBooking = bookings.find(booking => {
-        let bookingStart = new Date(booking.date + 'T' + booking.hour).getTime();
+        let bookingStart = new Date(booking.date + ' ' + booking.hour).getTime();
         if(booking.repeat && time >= bookingStart){
           bookingStart = new Date(new Date(time).toDateString() + ' ' + booking.hour).getTime();
         }
