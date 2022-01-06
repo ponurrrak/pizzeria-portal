@@ -453,6 +453,15 @@ const renderOrder = (order, changeOrder) => {
       >
         {`Order total: ${orderSums.totalOrder}`}
       </Typography>
+      <div className={styles.submitButton}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+        >
+          Submit
+        </Button>
+      </div>
     </List>
   );
 };

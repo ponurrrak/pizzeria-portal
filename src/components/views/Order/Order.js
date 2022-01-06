@@ -565,7 +565,7 @@ const Order = ({match: {params: {id}}, location: {state}}) => {
                 <FormControlLabel
                   key={table}
                   value={table}
-                  control={<Radio />}
+                  control={<Radio disabled={!isMenuActive}/>}
                   label={`table ${table}`}
                 />
               ))}
