@@ -14,7 +14,7 @@ import EventsNew from './components/views/EventsNew/EventsNew';
 import Kitchen from './components/views/Kitchen/Kitchen';
 import Order from './components/views/Order/Order';
 import OrderNew from './components/views/OrderNew/OrderNew';
-import Tables from './components/views/Tables/Tables';
+import Tables from './components/views/Tables/tablesContainer';
 import Waiter from './components/views/Waiter/WaiterContainer';
 import store from './redux/store';
 

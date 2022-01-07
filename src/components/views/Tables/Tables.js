@@ -1,60 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 import styles from './Tables.module.scss';
-
-const today = new Date();
-const todayString = today.toDateString();
-const tomorrow = new Date(today);
-tomorrow.setDate(today.getDate() + 1);
-
-const bookings = [
-  {
-    date: todayString,
-    hour: '23:00',
-    table: 2,
-    duration: 2,
-    id: 3,
-  },
-  {
-    date: '2021-12-27',
-    hour: '22:00',
-    table: 3,
-    repeat: 'daily',
-    duration: 2,
-    id: 2,
-  },
-  {
-    date: todayString,
-    hour: '22:00',
-    table: 1,
-    duration: 1,
-    id: 1,
-  },
-  {
-    date: todayString,
-    hour: '16:30',
-    table: 1,
-    duration: 2,
-    id: 4,
-  },
-  {
-    date: tomorrow.toDateString(),
-    hour: '18:00',
-    table: 2,
-    duration: 2,
-    id: 5,
-  },
-];
 
 const tablesNumber = 3;
 
@@ -150,66 +108,98 @@ const generateTableRow = (time, bookingIDsToRender) => {
   );
 };
 
-const Tables = () => {
+const Tables = ( {bookingTables, loading: { active, error }, fetchBookingTables} ) => {
   const timeNow = new Date();
   const [startTime, handleStartTimeChange] = useState(getStartTime(timeNow));
   const [endTime, handleEndTimeChange] = useState(getDefaultEndTime(timeNow));
+  useEffect(() => {
+    fetchBookingTables();
+  }, [fetchBookingTables]);
   const minLoopTime = getStartTime(startTime).getTime();
   const maxLoopTime = getEndTime(endTime).getTime();
-  return (
-    <Paper className={styles.component}>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-around"
-      >
-        <Grid item className={styles.gridItem} xs={12} sm={6} md={3}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DateTimePicker
-              inputVariant='outlined'
-              label='Choose start date & time'
-              value={startTime}
-              onChange={handleStartTimeChange}
-            />
-          </MuiPickersUtilsProvider>
+  if(active || !bookingTables.length){
+    return (
+      <Paper className={styles.component}>
+        <Typography gutterBottom variant='h4'>
+          Loading...
+        </Typography>
+      </Paper>
+    );
+  } else if(error) {
+    return (
+      <Paper className={styles.component}>
+        <Typography gutterBottom variant='h4'>
+          Error! Details:
+          <pre>{error}</pre>
+        </Typography>
+      </Paper>
+    );
+  } else {
+    return (
+      <Paper className={styles.component}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-around"
+        >
+          <Grid item className={styles.gridItem} xs={12} sm={6} md={3}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DateTimePicker
+                inputVariant='outlined'
+                label='Choose start date & time'
+                value={startTime}
+                onChange={handleStartTimeChange}
+              />
+            </MuiPickersUtilsProvider>
+          </Grid>
+          <Grid className={styles.gridItem} item xs={12} sm={6} md={3}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DateTimePicker
+                inputVariant='outlined'
+                label='Choose end date & time'
+                value={endTime}
+                onChange={handleEndTimeChange}
+              />
+            </MuiPickersUtilsProvider>
+          </Grid>
+          <Grid className={styles.gridItem} item xs={12} sm={6} md={3}>
+            <Button variant="contained" color="primary" size="large" component={Link} to='/tables/booking/new'>
+              New booking
+            </Button>
+          </Grid>
+          <Grid item className={styles.gridItem} xs={12} sm={6} md={3}>
+            <Button variant="contained" color="primary" size="large" component={Link} to='/tables/events/new'>
+              New event
+            </Button>
+          </Grid>
         </Grid>
-        <Grid className={styles.gridItem} item xs={12} sm={6} md={3}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DateTimePicker
-              inputVariant='outlined'
-              label='Choose end date & time'
-              value={endTime}
-              onChange={handleEndTimeChange}
-            />
-          </MuiPickersUtilsProvider>
-        </Grid>
-        <Grid className={styles.gridItem} item xs={12} sm={6} md={3}>
-          <Button variant="contained" color="primary" size="large" component={Link} to='/tables/booking/new'>
-            New booking
-          </Button>
-        </Grid>
-        <Grid item className={styles.gridItem} xs={12} sm={6} md={3}>
-          <Button variant="contained" color="primary" size="large" component={Link} to='/tables/events/new'>
-            New event
-          </Button>
-        </Grid>
-      </Grid>
-      <Table className={styles.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Time From</TableCell>
-            <TableCell>Time To</TableCell>
-            <TableCell>Table 1</TableCell>
-            <TableCell>Table 2</TableCell>
-            <TableCell>Table 3</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {generateTableBody(bookings, minLoopTime, maxLoopTime)}
-        </TableBody>
-      </Table>
-    </Paper>
-  );
+        <Table className={styles.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Date</TableCell>
+              <TableCell>Time From</TableCell>
+              <TableCell>Time To</TableCell>
+              <TableCell>Table 1</TableCell>
+              <TableCell>Table 2</TableCell>
+              <TableCell>Table 3</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {generateTableBody(bookingTables, minLoopTime, maxLoopTime)}
+          </TableBody>
+        </Table>
+      </Paper>
+    );
+  }
 };
+
+Tables.propTypes = {
+  bookingTables: PropTypes.array,
+  loading: PropTypes.shape({
+    active: PropTypes.bool,
+    error: PropTypes.oneOfType([PropTypes.bool,PropTypes.string]),
+  }),
+  fetchBookingTables: PropTypes.func,
+};
+
 export default Tables;
