@@ -9,6 +9,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 class Waiter extends React.Component {
@@ -80,14 +81,18 @@ class Waiter extends React.Component {
     if(active || !tables.length){
       return (
         <Paper className={styles.component}>
-          <p>Loading...</p>
+          <Typography gutterBottom variant='h4'>
+            Loading...
+          </Typography>
         </Paper>
       );
     } else if(error) {
       return (
         <Paper className={styles.component}>
-          <p>Error! Details:</p>
-          <pre>{error}</pre>
+          <Typography gutterBottom variant='h4'>
+            Error! Details:
+            <pre>{error}</pre>
+          </Typography>
         </Paper>
       );
     } else {

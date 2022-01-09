@@ -13,14 +13,18 @@ const createActionName = name => `app/${reducerName}/${name}`;
 const FETCH_START = createActionName('FETCH_START');
 const FETCH_SUCCESS = createActionName('FETCH_SUCCESS');
 const FETCH_ERROR = createActionName('FETCH_ERROR');
+const EDIT_BOOKING = createActionName('EDIT_BOOKING');
+const EDIT_EVENT = createActionName('EDIT_EVENT');
 
 /* action creators */
 export const fetchStarted = payload => ({ payload, type: FETCH_START });
 export const fetchSuccess = payload => ({ payload, type: FETCH_SUCCESS });
 export const fetchError = payload => ({ payload, type: FETCH_ERROR });
+export const editBooking = payload => ({ payload, type: EDIT_BOOKING });
+export const editEvent = payload => ({ payload, type: EDIT_EVENT });
 
 /* thunk creators */
-export const fetchFromAPI = () => {
+export const fetchBookingTablesFromAPI = () => {
   return (dispatch, getState) => {
     dispatch(fetchStarted());
     const promiseBookings = Axios.get(`${api.url}/api/${api.bookings}`);
@@ -30,6 +34,24 @@ export const fetchFromAPI = () => {
       .then(promises => {
         const data = promises[0].data.concat(promises[1].data);
         dispatch(fetchSuccess(data));
+      })
+      .catch(err => {
+        dispatch(fetchError(err.message || true));
+      });
+  };
+};
+
+export const loadBookingChanges = (payload) => {
+  return (dispatch, getState) => {
+    dispatch(fetchStarted());
+    Axios
+      .put(`${api.url}/api/${api.bookings}/${payload.id}`, payload)
+      .then(res => {
+        if(payload.repeat){
+          dispatch(editEvent(res.data));
+        } else {
+          dispatch(editBooking(res.data));
+        }
       })
       .catch(err => {
         dispatch(fetchError(err.message || true));
@@ -66,6 +88,28 @@ export default function reducer(statePart = [], action = {}) {
           active: false,
           error: action.payload,
         },
+      };
+    }
+    case EDIT_BOOKING: {
+      return {
+        loading: {
+          active: false,
+          error: false,
+        },
+        data: [...statePart.data.filter(item =>
+          item.repeat || item.id !== action.payload.id
+        ), action.payload],
+      };
+    }
+    case EDIT_EVENT: {
+      return {
+        loading: {
+          active: false,
+          error: false,
+        },
+        data: [...statePart.data.filter(item =>
+          !item.repeat || item.id !== action.payload.id
+        ), action.payload],
       };
     }
     default:

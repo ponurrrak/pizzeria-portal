@@ -15,6 +15,18 @@ import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
 import styles from './BookingNew.module.scss';
 
+const roundTime = time => {
+  const timeRounded = new Date(time);
+  if(time.getMinutes() < 30){
+    timeRounded.setMinutes(30);
+  } else {
+    timeRounded.setMinutes(60);
+  }
+  timeRounded.setSeconds(0);
+  timeRounded.setMilliseconds(0);
+  return timeRounded;
+};
+
 const stepsNumber = 5;
 
 const generateMarks = stepsNumber => {
@@ -39,7 +51,8 @@ const tablesList = Array.from({length: 3}, (item, index) => index + 1);
 const startersList = ['water', 'cola', 'bread'];
 
 const BookingNew = () => {
-  const [bookingTime, setBookingTime] = useState(new Date());
+  const timeNow = new Date();
+  const [bookingTime, setBookingTime] = useState(roundTime(timeNow));
   const [selectedTable, setSelectedTable] = useState(1);
   const handleTableChange = (event) => {
     setSelectedTable(event.target.value * 1);
@@ -57,6 +70,7 @@ const BookingNew = () => {
               label='Booking date&time start'
               value={bookingTime}
               onChange={setBookingTime}
+              minutesStep={30}
               disablePast
             />
           </MuiPickersUtilsProvider>

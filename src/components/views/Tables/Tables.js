@@ -50,7 +50,7 @@ const generateTableBody = (bookings, minLoopTime, maxLoopTime) => {
   const rows = [];
   for(let time = minLoopTime; time < maxLoopTime; time = time + loopTimeInterval){
     let areThereBookingsToRender = false;
-    const bookingIDsToRender = [];
+    const bookingsToRender = [];
     for(let table = 1; table <= tablesNumber; table++){
       const matchingBooking = bookings.find(booking => {
         let bookingStart = new Date(booking.date + ' ' + booking.hour).getTime();
@@ -62,23 +62,20 @@ const generateTableBody = (bookings, minLoopTime, maxLoopTime) => {
       });
       if(matchingBooking){
         areThereBookingsToRender = true;
-        bookingIDsToRender.push({
-          id: matchingBooking.id,
-          repeat: matchingBooking.repeat,
-        });
+        bookingsToRender.push(matchingBooking);
       } else {
-        bookingIDsToRender.push('');
+        bookingsToRender.push('');
       }
     }
     if (areThereBookingsToRender){
-      rows.push(generateTableRow(time, bookingIDsToRender));
+      rows.push(generateTableRow(time, bookingsToRender, bookings));
     }
   }
   return rows;
 };
 
 
-const generateTableRow = (time, bookingIDsToRender) => {
+const generateTableRow = (time, bookingsToRender, bookingsAll) => {
   const timeFrom = new Date(time);
   const timeTo = new Date(time + loopTimeInterval);
   const dateToRender = timeFrom.toDateString();
@@ -95,11 +92,23 @@ const generateTableRow = (time, bookingIDsToRender) => {
       <TableCell component="th" scope="row">
         {timeToToRender}
       </TableCell>
-      {bookingIDsToRender.map(({id, repeat}, index) => (
+      {bookingsToRender.map((booking, index) => (
         <TableCell key={index}>
-          {id && (
-            <Button component={Link} to={`/tables/${repeat ? 'events' : 'booking'}/${id}`}>
-              {`${repeat ? 'event' : 'book'}: ${id}`}
+          {booking.id && (
+            <Button
+              component={Link}
+              to={{
+                pathname: `/tables/${booking.repeat ? 'events' : 'booking'}/${booking.id}`,
+                state: {
+                  booking,
+                  others: booking.repeat ?
+                    bookingsAll.filter(item => !item.repeat || item.id !== booking.id)
+                    :
+                    bookingsAll.filter(item => item.repeat || item.id !== booking.id),
+                },
+              }}
+            >
+              {`${booking.repeat ? 'event' : 'book'}: ${booking.id}`}
             </Button>
           )}
         </TableCell>

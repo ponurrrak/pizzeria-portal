@@ -120,7 +120,7 @@ const compare = (prev, next) => (
 );
 
 const Kitchen = () => {
-  const [ordersList, changeOrdersList] = useState(orders.sort(compare));
+  const [ordersList, changeOrdersList] = useState(JSON.parse(JSON.stringify(orders)).sort(compare));
   return (
     <Paper className={styles.component}>
       <Table>

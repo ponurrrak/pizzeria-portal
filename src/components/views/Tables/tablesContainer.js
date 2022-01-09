@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Tables from './Tables';
-import { getAll, fetchFromAPI, getLoadingState } from '../../../redux/bookingTablesRedux';
+import { getAll, fetchBookingTablesFromAPI, getLoadingState } from '../../../redux/bookingTablesRedux';
 
 const mapStateToProps = (state) => ({
   bookingTables: getAll(state),
@@ -8,7 +8,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchBookingTables: () => dispatch(fetchFromAPI()),
+  fetchBookingTables: () => dispatch(fetchBookingTablesFromAPI()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tables);
