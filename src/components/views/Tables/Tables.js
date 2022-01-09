@@ -172,12 +172,27 @@ const Tables = ( {bookingTables, loading: { active, error }, fetchBookingTables}
             </MuiPickersUtilsProvider>
           </Grid>
           <Grid className={styles.gridItem} item xs={12} sm={6} md={3}>
-            <Button variant="contained" color="primary" size="large" component={Link} to='/tables/booking/new'>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              component={Link}
+              to={{
+                pathname: '/tables/booking/new',
+                state: bookingTables,
+              }}
+            >
               New booking
             </Button>
           </Grid>
           <Grid item className={styles.gridItem} xs={12} sm={6} md={3}>
-            <Button variant="contained" color="primary" size="large" component={Link} to='/tables/events/new'>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              component={Link}
+              to='/tables/events/new'
+            >
               New event
             </Button>
           </Grid>

@@ -7,7 +7,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import MainLayout from './components/layout/MainLayout/MainLayout';
 import Login from './components/views/Login/Login';
 import Booking from './components/views/Booking/bookingContainer';
-import BookingNew from './components/views/BookingNew/BookingNew';
+import BookingNew from './components/views/BookingNew/bookingNewContainer';
 import Dashboard from './components/views/Dashboard/Dashboard';
 import Events from './components/views/Events/Events';
 import EventsNew from './components/views/EventsNew/EventsNew';

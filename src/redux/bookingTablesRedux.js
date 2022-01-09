@@ -15,6 +15,7 @@ const FETCH_SUCCESS = createActionName('FETCH_SUCCESS');
 const FETCH_ERROR = createActionName('FETCH_ERROR');
 const EDIT_BOOKING = createActionName('EDIT_BOOKING');
 const EDIT_EVENT = createActionName('EDIT_EVENT');
+const ADD_BOOKING = createActionName('ADD_BOOKING');
 
 /* action creators */
 export const fetchStarted = payload => ({ payload, type: FETCH_START });
@@ -22,6 +23,7 @@ export const fetchSuccess = payload => ({ payload, type: FETCH_SUCCESS });
 export const fetchError = payload => ({ payload, type: FETCH_ERROR });
 export const editBooking = payload => ({ payload, type: EDIT_BOOKING });
 export const editEvent = payload => ({ payload, type: EDIT_EVENT });
+export const addNewBooking = payload => ({ payload, type: ADD_BOOKING });
 
 /* thunk creators */
 export const fetchBookingTablesFromAPI = () => {
@@ -52,6 +54,21 @@ export const loadBookingChanges = (payload) => {
         } else {
           dispatch(editBooking(res.data));
         }
+      })
+      .catch(err => {
+        dispatch(fetchError(err.message || true));
+      });
+  };
+};
+
+export const postNewBooking = (payload, callback) => {
+  return (dispatch, getState) => {
+    dispatch(fetchStarted());
+    Axios
+      .post(`${api.url}/api/${api.bookings}`, payload)
+      .then(res => {
+        dispatch(addNewBooking(res.data));
+        callback(res.data.id);
       })
       .catch(err => {
         dispatch(fetchError(err.message || true));
@@ -110,6 +127,15 @@ export default function reducer(statePart = [], action = {}) {
         data: [...statePart.data.filter(item =>
           !item.repeat || item.id !== action.payload.id
         ), action.payload],
+      };
+    }
+    case ADD_BOOKING: {
+      return {
+        loading: {
+          active: false,
+          error: false,
+        },
+        data: [...statePart.data, action.payload],
       };
     }
     default:
