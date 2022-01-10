@@ -120,7 +120,7 @@ const compare = (prev, next) => (
 );
 
 const Kitchen = () => {
-  const [ordersList, changeOrdersList] = useState(JSON.parse(JSON.stringify(orders)).sort(compare));
+  const [ordersList, setOrdersList] = useState(JSON.parse(JSON.stringify(orders)).sort(compare));
   return (
     <Paper className={styles.component}>
       <Table>
@@ -166,9 +166,9 @@ const Kitchen = () => {
                       order.products.splice(productsIndex, 1);
                       const changedOrder = ordersList.splice(ordersIndex, 1);
                       if(changedOrder[0].products.length){
-                        changeOrdersList([...ordersList, {...changedOrder[0], products: changedOrder[0].products}].sort(compare));
+                        setOrdersList([...ordersList, {...changedOrder[0], products: changedOrder[0].products}].sort(compare));
                       } else {
-                        changeOrdersList([...ordersList].sort(compare));
+                        setOrdersList([...ordersList].sort(compare));
                       }
                     }
                   }

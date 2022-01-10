@@ -18,14 +18,21 @@ import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import styles from './BookingNew.module.scss';
 
-const isNewBookingAllowed = (newBooking, previousBookings) => {
-  const notOverlappingBookings = previousBookings.filter(previous => {
-    const newBookingStart = new Date(newBooking.date + ' ' + newBooking.hour).getTime();
-    const newBookingEnd = newBookingStart + newBooking.duration * 60 * 60 * 1000;
-    const previousStart = previous.repeat ? new Date(newBooking.date + ' ' + previous.hour).getTime() : new Date(previous.date + ' ' + previous.hour).getTime();
-    const previousEnd = previousStart + previous.duration * 60 * 60 * 1000;
-    return newBooking.table !== previous.table || newBookingStart >= previousEnd || newBookingEnd <= previousStart;
-  });
+const filterBookings = (previousBooking, newBooking) => {
+  const newBookingStart = new Date(newBooking.date + ' ' + newBooking.hour).getTime();
+  const newBookingEnd = newBookingStart + newBooking.duration * 60 * 60 * 1000;
+  const previousStart = previousBooking.repeat ?
+    new Date(newBooking.date + ' ' + previousBooking.hour).getTime()
+    :
+    new Date(previousBooking.date + ' ' + previousBooking.hour).getTime();
+  const previousEnd = previousStart + previousBooking.duration * 60 * 60 * 1000;
+  return newBooking.table !== previousBooking.table || newBookingStart >= previousEnd || newBookingEnd <= previousStart;
+};
+
+const isNewBookingAllowed = (previousBookings, newBooking) => {
+  const notOverlappingBookings = previousBookings.filter(previous =>
+    filterBookings(previous, newBooking)
+  );
   return previousBookings.length === notOverlappingBookings.length;
 };
 
@@ -73,93 +80,6 @@ const startersList = ['water', 'cola', 'bread'];
 
 const BookingNew = ({ location: { state }, addNewBooking }) => {
 
-  const setBookingTime = time => {
-    const dateString = generateDateString(time);
-    const timeString= generateTimeString(time);
-    updateNewBooking({
-      ...newBooking,
-      date: dateString,
-      hour: timeString,
-    });
-  };
-
-  const handleSliderValueChange = (event, newValue) =>
-    updateNewBooking({
-      ...newBooking,
-      duration: newValue,
-    });
-
-  const handleTableChange = (event) =>
-    updateNewBooking({
-      ...newBooking,
-      table: event.target.value * 1,
-    });
-
-  const handlePeopleChange = (event) =>
-    updateNewBooking({
-      ...newBooking,
-      ppl: event.target.value,
-    });
-
-  const handleStartersChange = (event) => {
-    if(event.target.checked && newBooking.starters.indexOf(event.target.name) === -1){
-      updateNewBooking({
-        ...newBooking,
-        starters: [...newBooking.starters, event.target.name],
-      });
-    } else if(!event.target.checked && newBooking.starters.indexOf(event.target.name) !== -1){
-      newBooking.starters.splice(newBooking.starters.indexOf(event.target.name), 1);
-      updateNewBooking({
-        ...newBooking,
-        starters: [...newBooking.starters],
-      });
-    }
-  };
-
-  const handleAddressChange = (event) => {
-    updateNewBooking({
-      ...newBooking,
-      address: event.target.value,
-    });
-  };
-
-  const handlePhoneChange = (event) => {
-    updateNewBooking({
-      ...newBooking,
-      phone: event.target.value,
-    });
-  };
-
-  const fetchBookingsFromAPI = () => {
-    setLoading(true);
-    const promiseBookings = Axios.get(`${api.url}/api/${api.bookings}`);
-    const promiseEvents = Axios.get(`${api.url}/api/${api.events}`);
-    const promiseAll = Promise.all([promiseBookings, promiseEvents]);
-    promiseAll
-      .then(promises => {
-        const data = promises[0].data.concat(promises[1].data);
-        loadPreviousBookings(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.message || true);
-      });
-  };
-
-  const printMessage = (bookingID) => {
-    alert('The reservation has given id ' + bookingID);
-    loadPreviousBookings(null);
-  };
-
-  const submitNewBooking = () => {
-    if(isNewBookingAllowed(newBooking, previousBookings)){
-      addNewBooking(newBooking, printMessage);
-      updateNewBooking(bookingDefaults);
-    } else {
-      alert('Sorry, this table is taken at that time.\nTry another table or date or hour.');
-    }
-  };
-
   const timeNowRounded = roundTime(new Date());
   const bookingDefaults = {
     date: generateDateString(timeNowRounded),
@@ -172,10 +92,104 @@ const BookingNew = ({ location: { state }, addNewBooking }) => {
     phone: '',
   };
 
-  const [newBooking, updateNewBooking] = useState(bookingDefaults);
-  const [previousBookings, loadPreviousBookings] = useState(state ? state : null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [newBooking, setNewBooking] = useState(bookingDefaults);
+  const [previousBookings, setPreviousBookings] = useState(state ? state : null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const setBookingTime = time => {
+    if(time.getTime() < roundTime(new Date()).getTime()){
+      setNewBooking({
+        ...newBooking,
+      });
+    } else {
+      const dateString = generateDateString(time);
+      const timeString= generateTimeString(time);
+      setNewBooking({
+        ...newBooking,
+        date: dateString,
+        hour: timeString,
+      });
+    }
+  };
+
+  const handleBookingDurationChange = (event, newValue) =>
+    setNewBooking({
+      ...newBooking,
+      duration: newValue,
+    });
+
+  const handleTableChange = (event) =>
+    setNewBooking({
+      ...newBooking,
+      table: event.target.value * 1,
+    });
+
+  const handlePeopleChange = (event) =>
+    setNewBooking({
+      ...newBooking,
+      ppl: event.target.value,
+    });
+
+  const handleStartersChange = (event) => {
+    if(event.target.checked && newBooking.starters.indexOf(event.target.name) === -1){
+      setNewBooking({
+        ...newBooking,
+        starters: [...newBooking.starters, event.target.name],
+      });
+    } else if(!event.target.checked && newBooking.starters.indexOf(event.target.name) !== -1){
+      const starters = [...newBooking.starters];
+      starters.splice(starters.indexOf(event.target.name), 1);
+      setNewBooking({
+        ...newBooking,
+        starters: [...starters],
+      });
+    }
+  };
+
+  const handleAddressChange = (event) => {
+    setNewBooking({
+      ...newBooking,
+      address: event.target.value,
+    });
+  };
+
+  const handlePhoneChange = (event) => {
+    setNewBooking({
+      ...newBooking,
+      phone: event.target.value,
+    });
+  };
+
+  const fetchBookingsFromAPI = () => {
+    setIsLoading(true);
+    const promiseBookings = Axios.get(`${api.url}/api/${api.bookings}`);
+    const promiseEvents = Axios.get(`${api.url}/api/${api.events}`);
+    const promiseAll = Promise.all([promiseBookings, promiseEvents]);
+    promiseAll
+      .then(promises => {
+        const data = promises[0].data.concat(promises[1].data);
+        setPreviousBookings(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        setIsError(err.message || true);
+      });
+  };
+
+  const printMessage = (bookingID) => {
+    alert('The reservation has given id ' + bookingID);
+    setPreviousBookings(null);
+  };
+
+  const submitNewBooking = () => {
+    if(isNewBookingAllowed(previousBookings, newBooking)){
+      addNewBooking(newBooking, printMessage);
+      setNewBooking(bookingDefaults);
+    } else {
+      alert('Sorry, this table is taken at that time.\nTry another table or date or hour.');
+    }
+  };
 
   useEffect(() => {
     if(!previousBookings){
@@ -183,7 +197,7 @@ const BookingNew = ({ location: { state }, addNewBooking }) => {
     }
   });
 
-  if(loading || !previousBookings){
+  if(isLoading || !previousBookings){
     return (
       <Paper className={styles.component}>
         <Typography gutterBottom variant='h4'>
@@ -191,12 +205,12 @@ const BookingNew = ({ location: { state }, addNewBooking }) => {
         </Typography>
       </Paper>
     );
-  } else if(error) {
+  } else if(isError) {
     return (
       <Paper className={styles.component}>
         <Typography gutterBottom variant='h4'>
           Error! Details:
-          <pre>{error}</pre>
+          <pre>{isError}</pre>
         </Typography>
       </Paper>
     );
@@ -226,7 +240,7 @@ const BookingNew = ({ location: { state }, addNewBooking }) => {
               </Typography>
               <Slider
                 value={newBooking.duration}
-                onChange={handleSliderValueChange}
+                onChange={handleBookingDurationChange}
                 valueLabelDisplay="auto"
                 step={1}
                 marks={generateMarks(stepsNumber)}

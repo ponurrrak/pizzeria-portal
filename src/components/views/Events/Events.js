@@ -56,10 +56,10 @@ const tablesList = Array.from({length: 3}, (item, index) => index + 1);
 const startersList = ['water', 'cola', 'bread'];
 
 const Events = ({match}) => {
-  const [isDisabled, setActive] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(true);
   const [bookingTime, setBookingTime] = useState(new Date(event.date + 'T' + event.hour));
   const [sliderValue, setSliderValue] = useState(event.duration);
-  const handleSliderValueChange = (event, newValue) => {
+  const handleEventDurationChange = (event, newValue) => {
     setSliderValue(newValue);
   };
   const [selectedTable, setSelectedTable] = useState(event.table);
@@ -118,7 +118,7 @@ const Events = ({match}) => {
             </Typography>
             <Slider
               value={sliderValue}
-              onChange={handleSliderValueChange}
+              onChange={handleEventDurationChange}
               valueLabelDisplay="auto"
               step={1}
               marks={generateMarks(stepsNumber)}
@@ -201,7 +201,7 @@ const Events = ({match}) => {
             variant="contained"
             color="primary"
             size="large"
-            onClick={()=>setActive(!isDisabled)}
+            onClick={()=>setIsDisabled(!isDisabled)}
           >
             {isDisabled ? 'Edit' : 'Save'}
           </Button>

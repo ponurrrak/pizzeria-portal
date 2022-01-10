@@ -284,7 +284,7 @@ const countOrderSums = order => {
   return {...totalItems, totalOrder};
 };
 
-const renderMenu = (menuToRender, setPreOrder, order, changeOrder, orderCounter, setOrderCounter) => (
+const renderMenu = (menuToRender, setPreOrder, order, setOrder, orderCounter, setOrderCounter) => (
   <List disablePadding>
     {menuToRender.map(menuItem => {
       const amount = menuItem.amount ? menuItem.amount : 0;
@@ -328,7 +328,7 @@ const renderMenu = (menuToRender, setPreOrder, order, changeOrder, orderCounter,
                 color="primary"
 
                 onClick={() => {
-                  changeOrder([...order, {...menuItem, orderCounter}]);
+                  setOrder([...order, {...menuItem, orderCounter}]);
                   setOrderCounter(orderCounter + 1);
                   setPreOrder(sortObjectsArray([...otherMenuItems, menu.find(item => item.id === menuItem.id)]));
                 }}
@@ -432,7 +432,7 @@ const renderMenuCheckboxes = (optionsKeys, options, paramKey, menuItem, otherMen
   </FormGroup>
 );
 
-const renderOrder = (order, changeOrder, isMenuActive) => {
+const renderOrder = (order, setOrder, isMenuActive) => {
   const orderSums = countOrderSums(order);
   return (
     <List disablePadding>
@@ -454,7 +454,7 @@ const renderOrder = (order, changeOrder, isMenuActive) => {
                       if(orderItem.amount > 1){
                         orderChanged.push({...orderItem, amount: orderItem.amount - 1});
                       }
-                      changeOrder(sortObjectsArray([...orderChanged], 'orderCounter'));
+                      setOrder(sortObjectsArray([...orderChanged], 'orderCounter'));
                     }}
                   >
                     <RemoveIcon fontSize="small" />
@@ -476,7 +476,7 @@ const renderOrder = (order, changeOrder, isMenuActive) => {
                       const orderChanged = [...order];
                       orderChanged.splice(index, 1);
                       orderChanged.push({...orderItem, amount: orderItem.amount + 1});
-                      changeOrder(sortObjectsArray([...orderChanged], 'orderCounter'));
+                      setOrder(sortObjectsArray([...orderChanged], 'orderCounter'));
                     }}
                   >
                     <AddIcon fontSize="small" />
@@ -540,14 +540,14 @@ const renderOrderParams = orderItem => {
 
 
 const Order = ({match: {params: {id}}, location: {state}}) => {
-  const [isMenuActive, setMenuNotActive] = useState(false);
+  const [isMenuActive, setIsMenuActive] = useState(false);
   const orderingTable = state ? state : 1;
   const [selectedTable, setSelectedTable] = useState(orderingTable * 1);
   const handleTableChange = (event) => {
     setSelectedTable(event.target.value * 1);
   };
   const [menuToRender, setPreOrder] = useState(sortObjectsArray(JSON.parse(JSON.stringify(menu))));
-  const [order, changeOrder] = useState(orderObject);
+  const [order, setOrder] = useState(orderObject);
   const maxOrderCounter = Math.max(...orderObject.map(orderItem => orderItem.orderCounter)) + 1;
   const [orderCounter, setOrderCounter] = useState(maxOrderCounter);
   return (
@@ -579,7 +579,7 @@ const Order = ({match: {params: {id}}, location: {state}}) => {
             variant="contained"
             color="primary"
             size="large"
-            onClick={()=>setMenuNotActive(!isMenuActive)}
+            onClick={()=>setIsMenuActive(!isMenuActive)}
           >
             {isMenuActive ? 'Save' : 'Edit'}
           </Button>
@@ -594,7 +594,7 @@ const Order = ({match: {params: {id}}, location: {state}}) => {
             <Typography gutterBottom variant='h5'>
               Menu
             </Typography>
-            {renderMenu(menuToRender, setPreOrder, order, changeOrder, orderCounter, setOrderCounter)}
+            {renderMenu(menuToRender, setPreOrder, order, setOrder, orderCounter, setOrderCounter)}
           </Grid>)
           :
           ''
@@ -604,7 +604,7 @@ const Order = ({match: {params: {id}}, location: {state}}) => {
             <Typography gutterBottom variant='h5'>
               Order
             </Typography>
-            {renderOrder(order, changeOrder, isMenuActive)}
+            {renderOrder(order, setOrder, isMenuActive)}
           </Grid>)
           :
           ''

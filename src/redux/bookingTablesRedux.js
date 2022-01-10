@@ -54,6 +54,7 @@ export const loadBookingChanges = (payload) => {
         } else {
           dispatch(editBooking(res.data));
         }
+        alert('Changes have been saved succesfully');
       })
       .catch(err => {
         dispatch(fetchError(err.message || true));
